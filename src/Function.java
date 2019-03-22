@@ -31,7 +31,7 @@ public class Function implements Expression {
 
     @Override
     public HashSet<String> boundVariables() {
-
+        return null;
     }
 
     @Override
