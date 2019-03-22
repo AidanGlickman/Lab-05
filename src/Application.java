@@ -82,8 +82,7 @@ public class Application implements Expression {
 
         if(newLeft instanceof Variable || newLeft instanceof Application)
             return new Application(newLeft, newRight);
-        else
-            return new
+        else return null;
     }
 
     @Override
