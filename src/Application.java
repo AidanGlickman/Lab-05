@@ -76,6 +76,7 @@ public class Application implements Expression {
     }
 
     @Override
+    // TODO
     public Expression eval() {
         Expression newLeft = stabilize(left);
         Expression newRight = stabilize(right);
