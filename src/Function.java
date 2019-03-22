@@ -1,3 +1,4 @@
+import java.awt.desktop.AppForegroundListener;
 import java.util.HashSet;
 
 public class Function implements Expression {
@@ -21,22 +22,26 @@ public class Function implements Expression {
 
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
-        return null;
+        return new Function(this.left.alphaConvert(from, to, captured), ((Variable) this.right))
     }
 
     @Override
     public HashSet<String> allVariables() {
-        return null;
+        HashSet<String> vars = this.left.allVariables();
+        vars.addAll(this.right.allVariables());
+        return vars;
     }
 
     @Override
     public HashSet<String> boundVariables() {
-        return null;
+        HashSet<String> vars = this.left.boundVariables();
+        vars.addAll(this.right.boundVariables());
+        return vars;
     }
 
     @Override
     public Expression eval() {
-        return null;
+
     }
 
     @Override
