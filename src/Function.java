@@ -1,4 +1,3 @@
-import java.awt.desktop.AppForegroundListener;
 import java.util.HashSet;
 
 public class Function implements Expression {
@@ -22,7 +21,7 @@ public class Function implements Expression {
 
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
-        return new Function(this.left.alphaConvert(from, to, captured), ((Variable) this.right))
+
     }
 
     @Override
@@ -41,15 +40,16 @@ public class Function implements Expression {
 
     @Override
     public Expression eval() {
-
+        return this;
     }
 
     @Override
     public Expression replace(String from, Expression to) {
-        return null;
+        right.replace(from, to);
+        return this;
     }
 
     public Expression replace(Expression to){
-    return null;
+
     }
 }
