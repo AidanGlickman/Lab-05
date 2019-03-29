@@ -14,16 +14,19 @@ public class Function implements Expression {
         return new Function(left, right);
     }
 
+    // TODO
     @Override
     public boolean equals(Expression other) {
         return false;
     }
 
+    // TODO
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
         return null;
     }
 
+    // Not sure if correct
     @Override
     public HashSet<String> allVariables() {
         HashSet<String> vars = this.left.allVariables();
@@ -31,6 +34,7 @@ public class Function implements Expression {
         return vars;
     }
 
+    // Not sure if correct
     @Override
     public HashSet<String> boundVariables() {
         HashSet<String> vars = this.left.boundVariables();
@@ -50,6 +54,7 @@ public class Function implements Expression {
     }
 
     public Expression replace(Expression to){
-        return null;
+        right.replace(left.toString(),to);
+        return this;
     }
 }
