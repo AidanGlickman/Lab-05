@@ -21,7 +21,7 @@ public class Function implements Expression {
 
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
-
+        return null;
     }
 
     @Override
@@ -50,6 +50,6 @@ public class Function implements Expression {
     }
 
     public Expression replace(Expression to){
-
+        return null;
     }
 }

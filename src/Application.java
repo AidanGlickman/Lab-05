@@ -42,7 +42,7 @@ public class Application implements Expression {
 
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
-        return null;
+        return new Application(left.alphaConvert(from, to, false), right);
     }
 
     @Override
@@ -97,8 +97,18 @@ public class Application implements Expression {
     }
 
 
-//    TODO
-    String[] splitNum(String unsplit){
-        return null;
+    public String[] splitNum(String unsplit){
+        String[] split = new String[2];
+        for(int i = 0; i < split.length; i++){
+            try{
+                split[0] = unsplit.substring(0, i);
+                split[1] = Integer.toString(Integer.parseInt(unsplit.substring(i)));
+
+                return split;
+            } catch(Exception e) {
+                continue;
+            }
+        }
+        return split;
     }
 }

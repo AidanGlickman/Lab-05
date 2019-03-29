@@ -33,10 +33,10 @@ public class lambdaRunner {
 
         else{
             if(topLevels.get(0).substring(0,1).equals("λ")){
-                return new Application(topLevels)
+                return null;
             }
         }
-
+        return null;
     }
 
 
