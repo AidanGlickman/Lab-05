@@ -76,14 +76,13 @@ public class Application implements Expression {
     }
 
     @Override
-    // TODO
     public Expression eval() {
         Expression newLeft = stabilize(left);
         Expression newRight = stabilize(right);
 
         if(newLeft instanceof Variable || newLeft instanceof Application)
             return new Application(newLeft, newRight);
-        else return null;
+        else return ((Function)newLeft).replace(newRight);
     }
 
     @Override
@@ -91,9 +90,34 @@ public class Application implements Expression {
         return new Application(left.replace(from, to), right.replace(from, to));
     }
 
-//    TODO
+    public String genVar(String oldVar, HashSet<String> usedVars){
+        String[] splitvar = splitNum(oldVar);
+
+        String newVar = splitvar[0] + Integer.toString(Integer.parseInt(splitvar[1])+1);
+        while(true){
+            if(usedVars.contains(newVar)){
+                splitvar = splitNum(newVar);
+                newVar = splitvar[0] + Integer.toString(Integer.parseInt(splitvar[1])+1);
+            }
+            else return newVar;
+        }
+    }
+
     public Expression removeConflicts(Expression e1, Expression e2){
-        return null;
+        HashSet<String> e1vars = e1.boundVariables();
+        HashSet<String> e2vars = e2.boundVariables();
+
+        HashSet<String> usedVars = e1.allVariables();
+        usedVars.addAll(e2.allVariables());
+
+        HashSet<String> problemVars = e1vars;
+        problemVars.retainAll(e2vars);
+
+        for(String s : problemVars){
+            if(splitNum(s)[1] == null) s += "0";
+            e1 = e1.alphaConvert(s, genVar(s, usedVars), false);
+        }
+        return e1;
     }
 
 
