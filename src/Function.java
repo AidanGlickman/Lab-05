@@ -9,15 +9,26 @@ public class Function implements Expression {
         this.right = right;
     }
 
+    public Variable getLeft() {
+        return left;
+    }
+
+    public Expression getRight() {
+        return right;
+    }
+
     @Override
     public Expression copy() {
         return new Function(left, right);
     }
 
-    // TODO
     @Override
     public boolean equals(Expression other) {
-
+        if (other instanceof Function) {
+            other = other.alphaConvert(((Function) other).getLeft().toString(), left.toString(), false);
+            return ((Function) other).getRight().equals(right);
+        }
+        return false;
     }
 
     @Override
