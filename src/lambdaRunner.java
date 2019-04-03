@@ -24,7 +24,8 @@ public class lambdaRunner {
                 return defined.get(token);
             }
             else if(token.contains("(")){
-                buildTree(token.substring(1,token.length()-1));
+                System.out.println(token.substring(1,token.length()-1));
+                return buildTree(token.substring(1,token.length()-1));
             }
             else{
                 return new Variable(token);
@@ -36,17 +37,18 @@ public class lambdaRunner {
             for (int i = 1; i < topLevels.size(); i++) {
                 elements.add(topLevels.get(i));
             }
-            Variable topVar = new Variable(topLevels.get(0).substring(1));
+            Variable topVar = new Variable(topLevels.get(0));
 
             if (topLevels.get(0).substring(0, 1).equals("λ")) {
+                topVar = new Variable(topLevels.get(0).substring(1));
 
                 return new Function(topVar, buildTree(rebuildString(elements)));
             }
+
             else {
                 return new Application(topVar, buildTree(rebuildString(elements)));
             }
         }
-        return null;
     }
 
 
@@ -95,14 +97,14 @@ public class lambdaRunner {
 
             if(input.contains("=")){
                 String[] parts = input.split("=");
-                defined.put(parts[0], lambdify(parts[1]));
+                defined.put(parts[0].trim(), lambdify(parts[1]));
             }
 
-            if(input.length() > 3 && input.substring(0,3).equalsIgnoreCase("run")){
+            else if(input.length() > 3 && input.substring(0,3).equalsIgnoreCase("run")){
                 System.out.println(lambdify(input).eval());
             }
 
-            if(input.equals("exit")){
+            else if(input.equals("exit")){
                 System.out.println("Goodbye!");
                 System.exit(0);
             }
