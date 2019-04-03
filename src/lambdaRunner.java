@@ -31,12 +31,21 @@ public class lambdaRunner {
             }
         }
 
-        else{
-            if(topLevels.get(0).substring(0,1).equals("λ")){
-                return null;
+        else {
+            ArrayList<String> elements = new ArrayList<>();
+            for (int i = 1; i < topLevels.size(); i++) {
+                elements.add(topLevels.get(i));
+            }
+            Variable topVar = new Variable(topLevels.get(0).substring(1));
+
+            if (topLevels.get(0).substring(0, 1).equals("λ")) {
+
+                return new Function(topVar, buildTree(rebuildString(elements)));
+            }
+            else {
+                return new Application(topVar, buildTree(rebuildString(elements)));
             }
         }
-        return null;
     }
 
 
@@ -72,17 +81,33 @@ public class lambdaRunner {
         return topLevel;
     }
 
+    public static String rebuildString(ArrayList<String> elements){
+        return String.join(" ", elements);
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         while(true){
             System.out.print("> ");
             String input = scanner.nextLine().replaceAll("\uFEFF", "");
-            lambdify(input);
+
+            if(input.contains("=")){
+                String[] parts = input.split("=");
+                defined.put(parts[0], lambdify(parts[1]));
+            }
+
+            if(input.length() > 3 && input.substring(0,3).equalsIgnoreCase("run")){
+                System.out.println(lambdify(input).eval());
+            }
 
             if(input.equals("exit")){
                 System.out.println("Goodbye!");
                 System.exit(0);
+            }
+
+            else{
+                System.out.println(lambdify(input));
             }
         }
     }
