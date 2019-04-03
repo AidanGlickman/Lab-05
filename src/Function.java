@@ -49,7 +49,7 @@ public class Function implements Expression {
     }
 
     public String toString() {
-        return ("λ"+left.toString()+"."+right.toString());
+        return ("(λ"+left.toString()+"."+right.toString()+")");
     }
 
     // Not sure if correct
