@@ -17,13 +17,16 @@ public class Function implements Expression {
     // TODO
     @Override
     public boolean equals(Expression other) {
-        return false;
+
     }
 
-    // TODO
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
-        return null;
+        if (left.toString().equals(from)) {
+            return new Function((Variable) (left.alphaConvert(from,to,true)),(Expression) (right.alphaConvert(from,to,true)));
+        } else {
+            return new Function((Variable) (left.alphaConvert(from,to,false)),(Expression) (right.alphaConvert(from,to,false)));
+        }
     }
 
     // Not sure if correct
@@ -37,24 +40,22 @@ public class Function implements Expression {
     // Not sure if correct
     @Override
     public HashSet<String> boundVariables() {
-        HashSet<String> vars = this.left.boundVariables();
+        HashSet<String> vars = this.left.allVariables();
         vars.addAll(this.right.boundVariables());
         return vars;
     }
 
     @Override
     public Expression eval() {
-        return this;
+        return new Function(left,right.eval());
     }
 
     @Override
     public Expression replace(String from, Expression to) {
-        right.replace(from, to);
-        return this;
+        return new Function(left,right.replace(from, to));
     }
 
     public Expression replace(Expression to){
-        right.replace(left.toString(),to);
-        return this;
+        return new Function(left,right.replace(left.toString(),to));
     }
 }
