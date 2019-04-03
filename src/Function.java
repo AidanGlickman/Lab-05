@@ -48,6 +48,10 @@ public class Function implements Expression {
         return vars;
     }
 
+    public String toString() {
+        return ("λ"+left.toString()+"."+right.toString());
+    }
+
     // Not sure if correct
     @Override
     public HashSet<String> boundVariables() {
