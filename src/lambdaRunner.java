@@ -46,6 +46,7 @@ public class lambdaRunner {
                 return new Application(topVar, buildTree(rebuildString(elements)));
             }
         }
+        return null;
     }
 
 
