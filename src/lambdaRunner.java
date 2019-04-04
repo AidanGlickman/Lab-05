@@ -15,17 +15,36 @@ public class lambdaRunner {
         return buildTree(e);
     }
 
+    public static String stripParen(String e){
+        e = e.substring(1);
+        e = new StringBuilder(e).reverse().toString();
+        e = e.replaceFirst("\\)", "");
+        return new StringBuilder(e).reverse().toString();
+    }
+
+    public static int anyLambdas(ArrayList<String> args){
+        for(int i = 0; i < args.size(); i++) {
+            if (args.get(i).substring(0, 1).equals("λ"))
+                return i;
+        }
+        return -1;
+    }
+
+    public static ArrayList<String> listRange(ArrayList<String> args, int bot, int top){
+
+    }
+
     public static Expression buildTree(String e){
         ArrayList<String> topLevels = splitTopLevelArgs(e);
+        System.out.println(topLevels);
 
         if(topLevels.size() == 1){
             String token = topLevels.get(0);
             if(defined.containsKey(token)){
                 return defined.get(token);
             }
-            else if(token.contains("(")){
-                System.out.println(token.substring(1,token.length()-1));
-                return buildTree(token.substring(1,token.length()-1));
+            else if(token.substring(0,1).equals("(")){
+                return buildTree(stripParen(token));
             }
             else{
                 return new Variable(token);
@@ -37,16 +56,22 @@ public class lambdaRunner {
             for (int i = 1; i < topLevels.size(); i++) {
                 elements.add(topLevels.get(i));
             }
-            Variable topVar = new Variable(topLevels.get(0));
+            int nextLambdapos = anyLambdas(topLevels);
 
-            if (topLevels.get(0).substring(0, 1).equals("λ")) {
-                topVar = new Variable(topLevels.get(0).substring(1));
+            String firstEle = topLevels.get(0);
+
+            if (firstEle.substring(0, 1).equals("λ")) {
+                Variable topVar = new Variable(firstEle.substring(1));
 
                 return new Function(topVar, buildTree(rebuildString(elements)));
             }
 
             else {
-                return new Application(topVar, buildTree(rebuildString(elements)));
+                ArrayList<String> allButLast = new ArrayList<>();
+                for (int i = 0; i < topLevels.size()-1; i++) {
+                    allButLast.add(topLevels.get(i));
+                }
+                return new Application(buildTree(rebuildString(allButLast)), buildTree(topLevels.get(topLevels.size()-1)));
             }
         }
     }
@@ -97,11 +122,19 @@ public class lambdaRunner {
 
             if(input.contains("=")){
                 String[] parts = input.split("=");
-                defined.put(parts[0].trim(), lambdify(parts[1]));
+                String name = parts[0].trim();
+                if(defined.containsKey(name))
+                    System.out.printf("%s is already defined.\n", name);
+                else {
+                    Expression definition = lambdify(parts[1]);
+                    System.out.printf("Added %s as %s\n", definition, name);
+
+                    defined.put(name, definition);
+                }
             }
 
             else if(input.length() > 3 && input.substring(0,3).equalsIgnoreCase("run")){
-                System.out.println(lambdify(input).eval());
+                System.out.println(lambdify(input.substring(3)).eval());
             }
 
             else if(input.equals("exit")){

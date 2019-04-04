@@ -71,6 +71,6 @@ public class Function implements Expression {
     }
 
     public Expression replace(Expression to){
-        return new Function(left,right.replace(left.toString(),to));
+        return right.replace(left.toString(),to);
     }
 }

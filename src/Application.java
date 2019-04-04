@@ -80,8 +80,11 @@ public class Application implements Expression {
         Expression newLeft = stabilize(left);
         Expression newRight = stabilize(right);
 
-        if(newLeft instanceof Variable || newLeft instanceof Application)
+
+
+        if(newLeft instanceof Variable || newLeft instanceof Application) {
             return new Application(newLeft, newRight);
+        }
         else return ((Function)newLeft).replace(newRight);
     }
 
