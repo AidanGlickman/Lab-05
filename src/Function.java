@@ -72,6 +72,5 @@ public class Function implements Expression {
 
     public Expression replace(Expression to){
         return right.replace(left.toString(),to);
-
     }
 }
