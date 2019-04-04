@@ -63,7 +63,7 @@ public class Application implements Expression {
         return vars;
     }
 
-    private Expression stabilize(Expression expression){
+    public Expression stabilize(Expression expression){
         Expression oldExp = expression;
         Expression newExp = expression.eval();
 

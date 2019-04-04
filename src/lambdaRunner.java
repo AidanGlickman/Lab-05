@@ -31,12 +31,15 @@ public class lambdaRunner {
     }
 
     public static ArrayList<String> listRange(ArrayList<String> args, int bot, int top){
-
+        ArrayList<String> range = new ArrayList<>();
+        for(int i=bot; i < top; i++){
+            range.add(args.get(i));
+        }
+        return range;
     }
 
     public static Expression buildTree(String e){
         ArrayList<String> topLevels = splitTopLevelArgs(e);
-        System.out.println(topLevels);
 
         if(topLevels.size() == 1){
             String token = topLevels.get(0);
@@ -64,6 +67,10 @@ public class lambdaRunner {
                 Variable topVar = new Variable(firstEle.substring(1));
 
                 return new Function(topVar, buildTree(rebuildString(elements)));
+            }
+
+            else if(nextLambdapos != -1){
+                return new Application(buildTree(rebuildString(listRange(topLevels, 0, nextLambdapos))), buildTree(rebuildString(listRange(topLevels, nextLambdapos, topLevels.size()))));
             }
 
             else {
@@ -113,6 +120,19 @@ public class lambdaRunner {
         return String.join(" ", elements);
     }
 
+    private static Expression run(String e){
+        String cleaned = e.substring(3);
+        Expression oldExp = lambdify(cleaned).eval();
+        Expression newExp = oldExp.eval();
+
+        while(!newExp.equals(oldExp)){
+            oldExp = newExp;
+            newExp = newExp.eval();
+        }
+
+        return newExp;
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -123,10 +143,17 @@ public class lambdaRunner {
             if(input.contains("=")){
                 String[] parts = input.split("=");
                 String name = parts[0].trim();
+                parts[1] = parts[1].trim();
                 if(defined.containsKey(name))
                     System.out.printf("%s is already defined.\n", name);
                 else {
-                    Expression definition = lambdify(parts[1]);
+                    Expression definition;
+                    if(parts[1].length()>3 && parts[1].substring(0,3).equalsIgnoreCase("run")){
+                        definition = run(parts[1]);
+                    }
+                    else {
+                        definition = lambdify(parts[1]);
+                    }
                     System.out.printf("Added %s as %s\n", definition, name);
 
                     defined.put(name, definition);
@@ -134,10 +161,10 @@ public class lambdaRunner {
             }
 
             else if(input.length() > 3 && input.substring(0,3).equalsIgnoreCase("run")){
-                System.out.println(lambdify(input.substring(3)).eval());
+                System.out.println(run(input));
             }
 
-            else if(input.equals("exit")){
+            else if(input.equalsIgnoreCase("exit")){
                 System.out.println("Goodbye!");
                 System.exit(0);
             }
