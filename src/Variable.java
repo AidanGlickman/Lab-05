@@ -40,7 +40,7 @@ public class Variable implements Expression {
 
     @Override
     public HashSet<String> boundVariables() {
-        return null;
+        return new HashSet<String>();
     }
 
     @Override

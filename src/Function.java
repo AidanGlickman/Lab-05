@@ -33,7 +33,7 @@ public class Function implements Expression {
 
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
-        if (left.toString().equals(from)) {
+        if (captured && left.toString().equals(from)) {
             return new Function((Variable) (left.alphaConvert(from,to,true)),(Expression) (right.alphaConvert(from,to,true)));
         } else {
             return new Function((Variable) (left.alphaConvert(from,to,false)),(Expression) (right.alphaConvert(from,to,false)));
