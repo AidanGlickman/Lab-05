@@ -42,7 +42,7 @@ public class Application implements Expression {
 
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
-        return new Application(left.alphaConvert(from, to, false), right);
+        return new Application(left.alphaConvert(from, to, captured), right.alphaConvert(from, to, captured));
     }
 
     @Override

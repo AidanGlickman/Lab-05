@@ -28,6 +28,9 @@ public class Variable implements Expression {
 
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
+        if (captured && variableName.equals(from)) {
+            return new Variable(to);
+        }
         return this.copy();
     }
 
