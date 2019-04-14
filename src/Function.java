@@ -19,13 +19,13 @@ public class Function implements Expression {
 
     @Override
     public Expression copy() {
-        return new Function(left, right);
+        return new Function((Variable) left.copy(), right.copy());
     }
 
     @Override
     public boolean equals(Expression other) {
         if (other instanceof Function) {
-            other = other.alphaConvert(((Function) other).getLeft().toString(), left.toString(), false);
+            other = other.alphaConvert(((Function) other).getLeft().toString(), left.toString(), true);
             return ((Function) other).getRight().equals(right);
         }
         return false;
@@ -34,13 +34,12 @@ public class Function implements Expression {
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
         if (left.toString().equals(from)) {
-            return new Function((Variable) (left.alphaConvert(from,to,true)),(Expression) (right.alphaConvert(from,to,true)));
+            return new Function((Variable) (left.alphaConvert(from,to,true)),right.alphaConvert(from,to,true));
         } else {
-            return new Function((Variable) (left.alphaConvert(from,to,false)),(Expression) (right.alphaConvert(from,to,false)));
+            return new Function((Variable) (left.alphaConvert(from,to,captured)),right.alphaConvert(from,to,captured));
         }
     }
 
-    // Not sure if correct
     @Override
     public HashSet<String> allVariables() {
         HashSet<String> vars = this.left.allVariables();
@@ -52,7 +51,6 @@ public class Function implements Expression {
         return ("(λ"+left.toString()+"."+right.toString()+")");
     }
 
-    // Not sure if correct
     @Override
     public HashSet<String> boundVariables() {
         HashSet<String> vars = this.left.allVariables();
@@ -67,6 +65,8 @@ public class Function implements Expression {
 
     @Override
     public Expression replace(String from, Expression to) {
+        if (from.equals(left.toString()))
+            return this.copy();
         return new Function(left,right.replace(from, to));
     }
 

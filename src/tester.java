@@ -12,6 +12,6 @@ public class tester {
         yes1.add("d4");
         yes1.add("d5");
 
-        System.out.println(app.genVar("d1", yes1));
+        //System.out.println(app.genVar("d1", yes1));
     }
 }

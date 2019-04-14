@@ -28,7 +28,7 @@ public class Application implements Expression {
 
     @Override
     public Expression copy() {
-        return new Application(left, right);
+        return new Application(left.copy(), right.copy());
     }
 
     @Override
@@ -64,33 +64,43 @@ public class Application implements Expression {
     }
 
     public Expression stabilize(Expression expression){
-        Expression oldExp = expression;
-        Expression newExp = expression.eval();
-
-        while(!oldExp.equals(newExp)){
-            oldExp = newExp;
-            newExp = newExp.eval();
+        Expression currentExp;
+        if (expression instanceof Application) {
+            currentExp = expression.copy().eval();
+            Expression oldExp = expression.copy();
+            while (!oldExp.equals(currentExp) && currentExp instanceof Application) {
+                oldExp = currentExp.copy();
+                currentExp = currentExp.eval();
+            }
+        } else {
+            currentExp = expression;
         }
 
-        return newExp;
+        return currentExp.copy();
     }
 
     @Override
     public Expression eval() {
-        Expression newLeft = stabilize(left);
-        Expression newRight = stabilize(right);
+        Expression newLeft = stabilize(left.copy());
+        Expression newRight = stabilize(right.copy());
 
         if(newLeft instanceof Variable || newLeft instanceof Application) {
             return new Application(newLeft, newRight);
+        } else {
+            if (newRight instanceof Variable) {
+                if (newLeft.boundVariables().contains(newRight.toString())) {
+                    newLeft = newLeft.alphaConvert(newRight.toString(), newRight + "'", false);
+                }
+            }
+            return ((Function) newLeft).getRight().replace(((Function) newLeft).getLeft().toString(), newRight);
         }
-        else return ((Function)newLeft).replace(removeConflicts(newRight, newLeft));
     }
 
     @Override
     public Expression replace(String from, Expression to) {
         return new Application(left.replace(from, to), right.replace(from, to));
     }
-
+    /*
     public String genVar(String oldVar, HashSet<String> usedVars){
         String[] splitvar = splitNum(oldVar);
 
@@ -121,7 +131,6 @@ public class Application implements Expression {
         return e1;
     }
 
-
     public String[] splitNum(String unsplit){
         String[] split = new String[2];
         for(int i = 0; i < split.length; i++){
@@ -135,5 +144,5 @@ public class Application implements Expression {
             }
         }
         return split;
-    }
+    }*/
 }
