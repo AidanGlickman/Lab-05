@@ -25,22 +25,26 @@ public class Function implements Expression {
     @Override
     public boolean equals(Expression other) {
         if (other instanceof Function) {
-            other = other.alphaConvert(((Function) other).getLeft().toString(), left.toString(), false);
-            return ((Function) other).getRight().equals(right);
+            Variable otherVar = ((Function)other).getLeft();
+            Expression otherExp = ((Function)other).getRight();
+            return right.equals(otherExp.alphaConvert(otherVar.toString(), left.toString(), true));
         }
         return false;
     }
 
     @Override
     public Expression alphaConvert(String from, String to, boolean captured) {
-        if (left.toString().equals(from)) {
-            return new Function((Variable) (left.alphaConvert(from,to,true)),(Expression) (right.alphaConvert(from,to,true)));
-        } else {
-            return new Function((Variable) (left.alphaConvert(from,to,false)),(Expression) (right.alphaConvert(from,to,false)));
+        Variable var = (Variable) left.alphaConvert(from, to, captured);
+        Expression exp = right.alphaConvert(from, to, captured);
+
+        if (this.left.toString().equals(from)) {
+            var = (Variable) left.alphaConvert(from, to, true);
+            exp = right.alphaConvert(from, to, true);
         }
+
+        return new Function(var, exp);
     }
 
-    // Not sure if correct
     @Override
     public HashSet<String> allVariables() {
         HashSet<String> vars = this.left.allVariables();
@@ -52,7 +56,6 @@ public class Function implements Expression {
         return ("(λ"+left.toString()+"."+right.toString()+")");
     }
 
-    // Not sure if correct
     @Override
     public HashSet<String> boundVariables() {
         HashSet<String> vars = this.left.allVariables();
@@ -67,10 +70,9 @@ public class Function implements Expression {
 
     @Override
     public Expression replace(String from, Expression to) {
-        return new Function(left,right.replace(from, to));
+        if (from.equals(left.toString()))
+            return copy();
+        return new Function(left, right.replace(from, to));
     }
 
-    public Expression replace(Expression to){
-        return right.replace(left.toString(),to);
-    }
 }

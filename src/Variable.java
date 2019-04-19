@@ -31,7 +31,7 @@ public class Variable implements Expression {
         if (captured && variableName.equals(from)) {
             return new Variable(to);
         }
-        return this.copy();
+        return copy();
     }
 
     @Override
@@ -48,12 +48,12 @@ public class Variable implements Expression {
 
     @Override
     public Expression eval() {
-        return this.copy();
+        return copy();
     }
 
     @Override
     public Expression replace(String from, Expression to) {
         if(variableName.equals(from)) return to.copy();
-        else return this;
+        else return copy();
     }
 }
