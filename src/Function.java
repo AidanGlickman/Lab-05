@@ -1,4 +1,5 @@
 import java.util.HashSet;
+// Daniel Kim, Aidan Glickman
 
 public class Function implements Expression {
     private Variable left;
